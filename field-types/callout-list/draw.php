@@ -20,3 +20,55 @@
 <?php
 		}
 	}
+?>
+<script>
+	(function() {
+
+		var Form;
+		var Fieldset;
+		var LastValue = "<?=$field["value"]?>";
+		var OtherFieldsets;
+		var RequiredFields;
+
+		// Add a ready hook to populate our values
+		BigTree.ReadyHooks.push(function() {
+			Form = $("#<?=$field["id"]?>").parents("form");
+			Fieldset = $("#<?=$field["id"]?>").parents("fieldset");
+			OtherFieldsets = Form.find("fieldset").not(Fieldset);
+			RequiredFields = OtherFieldsets.find("input.required, select.required, textarea.required, input.numeric, input.email, input.link");
+		});
+
+		<?php if ($field["value"]) { ?>
+		// Add a ready hook to disable other form elements if this is enabled
+		BigTree.ReadyHooks.push(saveInputStates);
+		<?php } ?>
+
+		function saveInputStates() {
+			RequiredFields.each(function() {
+				$(this).attr("data-reusable-callouts-saved-class", $(this).attr("class"));
+				$(this).attr("class", "");
+			});
+		}
+
+		function resetInputStates() {
+			RequiredFields.each(function() {
+				$(this).attr("class", $(this).attr("data-reusable-callouts-saved-class"));
+			});
+		}
+
+		$("#<?=$field["id"]?>").change(function() {
+			var value = $(this).val();
+
+			// We're going to remove the required classes and disable everything
+			if (value && !LastValue) {
+				saveInputStates();
+			// We're going to return the classes and re-enable
+			} else if (!value && LastValue) {
+				resetInputStates();
+			}
+
+			LastValue = value;
+		});
+
+	})();
+</script>
