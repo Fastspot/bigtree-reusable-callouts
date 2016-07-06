@@ -1,8 +1,8 @@
 {
     "type": "extension",
     "id": "com.fastspot.reusable-callouts",
-    "version": "1.0.1",
-    "revision": 5,
+    "version": "1.0.2",
+    "revision": 6,
     "compatibility": "4.2+",
     "title": "Reusable Callouts",
     "description": "Implements a module that allows users to create reusable callouts and a field type allowing end users to choose a pre-created callout when adding callouts.",
@@ -133,8 +133,12 @@
             }
         ],
         "tables": {
-            "btx_reusable_callouts": "CREATE TABLE `btx_reusable_callouts` (   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,   `type` varchar(255) DEFAULT NULL,   `title` varchar(255) DEFAULT NULL,   `data` varchar(255) DEFAULT NULL,   PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+            "btx_reusable_callouts": "CREATE TABLE `btx_reusable_callouts` (   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,   `type` varchar(255) DEFAULT NULL,   `title` varchar(255) DEFAULT NULL,   `data` longtext,   PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
         }
     },
-    "sql_revisions": []
+    "sql_revisions": {
+        "6": [
+            "ALTER TABLE `btx_reusable_callouts` MODIFY COLUMN `data` longtext NULL AFTER `title`"
+        ]
+    }
 }
