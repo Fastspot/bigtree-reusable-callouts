@@ -54,6 +54,10 @@
 			OtherFields.each(function() {
 				$(this).attr("data-disabled-state", $(this).prop("disabled"));
 				$(this).prop("disabled", true);
+
+				if ($(this).get(0).customControl && typeof $(this).get(0).customControl.disable == "function") {
+					$(this).get(0).customControl.disable();
+				}
 			});
 		}
 
@@ -65,6 +69,10 @@
 			OtherFields.each(function() {
 				if ($(this).attr("data-disabled-state") == "false") {
 					$(this).prop("disabled", false);
+
+					if ($(this).get(0).customControl && typeof $(this).get(0).customControl.enable == "function") {
+						$(this).get(0).customControl.enable();
+					}
 				}
 			});
 		}
