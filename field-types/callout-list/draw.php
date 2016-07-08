@@ -28,6 +28,7 @@
 		var Fieldset;
 		var LastValue = "<?=$field["value"]?>";
 		var OtherFieldsets;
+		var OtherFields;
 		var RequiredFields;
 
 		// Add a ready hook to populate our values
@@ -35,6 +36,7 @@
 			Form = $("#<?=$field["id"]?>").parents("form");
 			Fieldset = $("#<?=$field["id"]?>").parents("fieldset");
 			OtherFieldsets = Form.find("fieldset").not(Fieldset);
+			OtherFields = OtherFieldsets.find("input, select, textarea");
 			RequiredFields = OtherFieldsets.find("input.required, select.required, textarea.required, input.numeric, input.email, input.link");
 		});
 
@@ -48,11 +50,22 @@
 				$(this).attr("data-reusable-callouts-saved-class", $(this).attr("class"));
 				$(this).attr("class", "");
 			});
+
+			OtherFields.each(function() {
+				$(this).attr("data-disabled-state", $(this).prop("disabled"));
+				$(this).prop("disabled", true);
+			});
 		}
 
 		function resetInputStates() {
 			RequiredFields.each(function() {
 				$(this).attr("class", $(this).attr("data-reusable-callouts-saved-class"));
+			});
+
+			OtherFields.each(function() {
+				if ($(this).attr("data-disabled-state") == "false") {
+					$(this).prop("disabled", false);
+				}
 			});
 		}
 
