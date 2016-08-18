@@ -1,8 +1,8 @@
 {
     "type": "extension",
     "id": "com.fastspot.reusable-callouts",
-    "version": "1.0.4",
-    "revision": 8,
+    "version": "1.1",
+    "revision": 9,
     "compatibility": "4.2+",
     "title": "Reusable Callouts",
     "description": "Implements a module that allows users to create reusable callouts and a field type allowing end users to choose a pre-created callout when adding callouts.",
@@ -88,9 +88,9 @@
                         "table": "btx_reusable_callouts",
                         "fields": {
                             "title": {
+                                "width": "708",
                                 "title": "Title",
                                 "parser": "",
-                                "width": 788,
                                 "numeric": false
                             }
                         },
@@ -105,6 +105,8 @@
                             "group_parser": ""
                         },
                         "actions": {
+                            "report": "{\"name\":\"Report\",\"class\":\"icon_view\",\"route\":\"report\",\"function\":\"\"}",
+                            "archive": "on",
                             "edit": "on",
                             "delete": "on"
                         },
@@ -133,12 +135,15 @@
             }
         ],
         "tables": {
-            "btx_reusable_callouts": "CREATE TABLE `btx_reusable_callouts` (   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,   `type` varchar(255) DEFAULT NULL,   `title` varchar(255) DEFAULT NULL,   `data` longtext,   PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+            "btx_reusable_callouts": "CREATE TABLE `btx_reusable_callouts` (   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,   `type` varchar(255) DEFAULT NULL,   `title` varchar(255) DEFAULT NULL,   `data` longtext,   `archived` char(2) NOT NULL DEFAULT '',   PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
         }
     },
     "sql_revisions": {
         "6": [
             "ALTER TABLE `btx_reusable_callouts` MODIFY COLUMN `data` longtext NULL AFTER `title`"
+        ],
+        "9": [
+            "ALTER TABLE `btx_reusable_callouts` ADD COLUMN `archived` char(2) NOT NULL DEFAULT '' AFTER `data`"
         ]
     }
 }
