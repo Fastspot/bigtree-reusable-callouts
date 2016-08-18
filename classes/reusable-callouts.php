@@ -92,7 +92,7 @@
 					$found = false;
 					
 					if ($resource["type"] == "callouts") {
-						foreach ($resources[$resource["id"]] as $callout) {
+						foreach (array_filter((array) $resources[$resource["id"]]) as $callout) {
 							$found = static::parseCalloutData($callout, $callout_id);
 							
 							if ($found) {
