@@ -35,6 +35,9 @@
 	<hr>
 	
 	<div id="callout_field_area">
-		<?php include BigTree::path("admin/ajax/callouts/resources.php") ?>
+		<?php include BigTree::path("admin/ajax/callouts/resources.php"); ?>
 	</div>
 </section>
+<script>
+	BigTree.formHooks("#callout_field_area");
+</script>

@@ -19,8 +19,8 @@
 			}
 ?>
 <fieldset>
-	<label<?=$label_validation_class?>><?=$field["title"]?><? if ($field["subtitle"]) { ?> <small><?=$field["subtitle"]?></small><? } ?></label>
-	<?php include BigTree::path("admin/form-field-types/draw/list.php") ?>
+	<label<?=$label_validation_class?>><?=$field["title"]?><?php if ($field["subtitle"]) { ?> <small><?=$field["subtitle"]?></small><?php } ?></label>
+	<?php include BigTree::path("admin/form-field-types/draw/list.php"); ?>
 </fieldset>
 <hr>
 <?php
