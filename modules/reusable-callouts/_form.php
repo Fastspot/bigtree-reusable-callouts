@@ -1,4 +1,8 @@
 <?php
+	if (method_exists($admin, "drawCSRFToken")) {
+		$admin->drawCSRFToken();
+	}
+	
 	// Set a post var to tell the "Callout List" field type to not draw itself.
 	$_POST["btx_reusable_callouts_editor"] = true;
 ?>

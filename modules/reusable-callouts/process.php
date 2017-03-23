@@ -1,4 +1,8 @@
 <?php
+	if (method_exists($admin, "verifyCSRFToken")) {
+		$admin->verifyCSRFToken();
+	}
+	
 	// Stick the callout type back into the callout
 	$_POST["data"][0]["type"] = $_POST["type"];
 
