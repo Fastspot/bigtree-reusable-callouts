@@ -3,7 +3,7 @@
 	// $_POST is something we have control over both inline and when calling the AJAX resources
 	if (!isset($_POST["btx_reusable_callouts_editor"])) {
 		$module = new BTXReusableCallouts;
-		$available = $module->getMatching(array("archived", "type"), array("", $bigtree["callout"]["id"]));
+		$available = $module->getMatching(array("archived", "type"), array("", $bigtree["callout"]["id"]), "title ASC");
 		$existing_value = false;
 
 		if (count($available)) {
