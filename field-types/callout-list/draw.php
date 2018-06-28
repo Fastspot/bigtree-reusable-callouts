@@ -30,12 +30,14 @@
 <script>
 	(function() {
 
+		var DisplayField;
 		var Form;
 		var Fieldset;
 		var LastValue = "<?=$existing_value?>";
 		var OtherFieldsets;
 		var OtherFields;
 		var RequiredFields;
+		var SavedDisplayFieldValue;
 
 		// Add a ready hook to populate our values
 		BigTree.ReadyHooks.push(function() {
@@ -44,6 +46,8 @@
 			OtherFieldsets = Form.find("fieldset").not(Fieldset);
 			RequiredFields = OtherFieldsets.find("input.required, select.required, textarea.required, input.numeric, input.email, input.link");
 			OtherFields = OtherFieldsets.find("input, select, textarea");
+			DisplayField = Form.find(".display_field");
+			SavedDisplayFieldValue = DisplayField.val();
 		});
 
 		<?php if ($existing_value) { ?>
@@ -57,6 +61,10 @@
 				$(this).attr("class", "");
 			});
 
+			OtherFieldsets.addClass("disabled");
+			DisplayField.val("<?=$field["key"]?>");
+
+			<?php if (BIGTREE_REVISION < 211) { ?>
 			OtherFields.each(function() {
 				$(this).attr("data-disabled-state", $(this).prop("disabled"));
 				$(this).prop("disabled", true);
@@ -65,6 +73,7 @@
 					$(this).get(0).customControl.disable();
 				}
 			});
+			<?php } ?>
 		}
 
 		function resetInputStates() {
@@ -72,6 +81,10 @@
 				$(this).attr("class", $(this).attr("data-reusable-callouts-saved-class"));
 			});
 
+			OtherFieldsets.removeClass("disabled");
+			DisplayField.val(SavedDisplayFieldValue);
+
+			<?php if (BIGTREE_REVISION < 211) { ?>
 			OtherFields.each(function() {
 				if ($(this).attr("data-disabled-state") == "false") {
 					$(this).prop("disabled", false);
@@ -81,6 +94,7 @@
 					}
 				}
 			});
+			<?php } ?>
 		}
 
 		$("#<?=$field["id"]?>").change(function() {
