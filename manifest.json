@@ -1,8 +1,8 @@
 {
     "type": "extension",
     "id": "com.fastspot.reusable-callouts",
-    "version": "1.3.4",
-    "revision": 19,
+    "version": "1.3.5",
+    "revision": 20,
     "compatibility": "4.2+",
     "title": "Reusable Callouts",
     "description": "Implements a module that allows users to create reusable callouts and a field type allowing end users to choose a pre-created callout when adding callouts.",
@@ -98,11 +98,9 @@
                             "filter": "",
                             "group_field": "type",
                             "sort": "`id` DESC",
-                            "other_table": "bigtree_callouts",
-                            "title_field": "name",
-                            "ot_sort_field": "name",
+                            "other_table": "",
                             "ot_sort_direction": "ASC",
-                            "group_parser": ""
+                            "group_parser": "if (BIGTREE_REVISION < 400) {\r\n    $callout = sqlfetch(sqlquery(\"SELECT name FROM bigtree_callouts WHERE id = '\".sqlescape($item[\"type\"]).\"'\"));\r\n} else {\r\n    $callout = BigTreeJSONDB::get(\"callouts\", $item[\"type\"]);\r\n}\r\n\r\n$value = $callout[\"name\"];"
                         },
                         "actions": {
                             "report": "{\"name\":\"Report\",\"class\":\"icon_view\",\"route\":\"report\",\"function\":\"\"}",
