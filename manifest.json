@@ -1,8 +1,8 @@
 {
     "type": "extension",
     "id": "com.fastspot.reusable-callouts",
-    "version": "1.3.5",
-    "revision": 20,
+    "version": "1.3.6",
+    "revision": 21,
     "compatibility": "4.2+",
     "title": "Reusable Callouts",
     "description": "Implements a module that allows users to create reusable callouts and a field type allowing end users to choose a pre-created callout when adding callouts.",
@@ -23,78 +23,26 @@
         "module_groups": [],
         "modules": [
             {
-                "id": "6",
-                "group": null,
                 "name": "Reusable Callouts",
                 "route": "com.fastspot.reusable-callouts*reusable-callouts",
                 "class": "BTXReusableCallouts",
                 "icon": "gear",
+                "group": null,
                 "gbp": {
                     "name": "",
                     "table": "",
                     "item_parser": "",
                     "other_table": ""
                 },
-                "position": "0",
                 "extension": "com.fastspot.reusable-callouts",
-                "actions": [
-                    {
-                        "id": "27",
-                        "module": "6",
-                        "name": "View Reusable Callouts",
-                        "route": "",
-                        "in_nav": "on",
-                        "form": null,
-                        "view": "9",
-                        "report": null,
-                        "class": "list",
-                        "level": "0",
-                        "position": "0"
-                    },
-                    {
-                        "id": "28",
-                        "module": "6",
-                        "name": "Add Callout",
-                        "route": "add",
-                        "in_nav": "on",
-                        "form": null,
-                        "view": null,
-                        "report": null,
-                        "class": "add",
-                        "level": "0",
-                        "position": "0"
-                    },
-                    {
-                        "id": "29",
-                        "module": "6",
-                        "name": "Edit Callout",
-                        "route": "edit",
-                        "in_nav": "",
-                        "form": null,
-                        "view": null,
-                        "report": null,
-                        "class": "edit",
-                        "level": "0",
-                        "position": "0"
-                    }
-                ],
+                "id": "modules-15ca4a56a26e1e",
                 "views": [
                     {
-                        "id": "9",
-                        "module": "6",
                         "title": "Reusable Callouts",
                         "description": "",
-                        "type": "grouped",
                         "table": "btx_reusable_callouts",
-                        "fields": {
-                            "title": {
-                                "width": "708",
-                                "title": "Title",
-                                "parser": "",
-                                "numeric": false
-                            }
-                        },
-                        "options": {
+                        "type": "grouped",
+                        "settings": {
                             "filter": "",
                             "group_field": "type",
                             "sort": "`id` DESC",
@@ -102,19 +50,74 @@
                             "ot_sort_direction": "ASC",
                             "group_parser": "if (BIGTREE_REVISION < 400) {\r\n    $callout = sqlfetch(sqlquery(\"SELECT name FROM bigtree_callouts WHERE id = '\".sqlescape($item[\"type\"]).\"'\"));\r\n} else {\r\n    $callout = BigTreeJSONDB::get(\"callouts\", $item[\"type\"]);\r\n}\r\n\r\n$value = $callout[\"name\"];"
                         },
+                        "fields": {
+                            "title": {
+                                "width": "708",
+                                "title": "Title",
+                                "parser": "",
+                                "numeric": ""
+                            }
+                        },
                         "actions": {
                             "report": "{\"name\":\"Report\",\"class\":\"icon_view\",\"route\":\"report\",\"function\":\"\"}",
                             "archive": "on",
                             "edit": "on",
                             "delete": "on"
                         },
+                        "related_form": null,
                         "preview_url": "",
-                        "related_form": null
+                        "exclude_from_search": "",
+                        "id": "views-15ca4a56a28987"
+                    }
+                ],
+                "actions": [
+                    {
+                        "route": "",
+                        "in_nav": "on",
+                        "class": "list",
+                        "name": "View Reusable Callouts",
+                        "form": null,
+                        "view": "views-15ca4a56a28987",
+                        "report": null,
+                        "level": "0",
+                        "position": "2",
+                        "0": "route",
+                        "id": "actions-15ca4a56a2d366",
+                        "module": "modules-15ca4a56a26e1e"
+                    },
+                    {
+                        "route": "add",
+                        "in_nav": "on",
+                        "class": "add",
+                        "name": "Add Callout",
+                        "form": null,
+                        "view": null,
+                        "report": null,
+                        "level": "0",
+                        "position": "1",
+                        "0": "route",
+                        "id": "actions-15ca4a56a2ed16",
+                        "module": "modules-15ca4a56a26e1e"
+                    },
+                    {
+                        "route": "edit",
+                        "in_nav": "",
+                        "class": "edit",
+                        "name": "Edit Callout",
+                        "form": null,
+                        "view": null,
+                        "report": null,
+                        "level": "0",
+                        "position": "0",
+                        "0": "route",
+                        "id": "actions-15ca4a56a30014",
+                        "module": "modules-15ca4a56a26e1e"
                     }
                 ],
                 "forms": [],
-                "embed_forms": [],
-                "reports": []
+                "embeddable-forms": [],
+                "reports": [],
+                "embed_forms": []
             }
         ],
         "templates": [],

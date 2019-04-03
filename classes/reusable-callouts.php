@@ -66,21 +66,39 @@
 		static function getUsageInPages($callout_id) {
 			$pages = array();
 			$templates = array();
+			$template_query = array();
 
 			// We're going to look in every page that has a template containing callouts
-			$template_query = array();
-			$q = sqlquery("SELECT * FROM bigtree_templates WHERE resources LIKE '%callouts%' OR resources LIKE '%matrix%'");
-
-			while ($template = sqlfetch($q)) {
-				$resources = json_decode($template["resources"], true);
-
-				foreach ($resources as $resource) {
-					if (!isset($templates[$template["id"]]) && ($resource["type"] == "callouts" || $resource["type"] == "matrix")) {
-						$templates[$template["id"]] = $resources;
-						$template_query[] = "template = '".$template["id"]."'";
-						break;
+			if (BIGTREE_REVISION < 400) {
+				$q = sqlquery("SELECT * FROM bigtree_templates WHERE resources LIKE '%callouts%' OR resources LIKE '%matrix%'");
+	
+				while ($template = sqlfetch($q)) {
+					$resources = json_decode($template["resources"], true);
+	
+					foreach ($resources as $resource) {
+						if (!isset($templates[$template["id"]]) && ($resource["type"] == "callouts" || $resource["type"] == "matrix")) {
+							$templates[$template["id"]] = $resources;
+							$template_query[] = "template = '".$template["id"]."'";
+							break;
+						}
 					}
 				}
+			} else {
+				$all_templates = BigTreeJSONDB::getAll("templates");
+
+				foreach ($all_templates as $template) {
+					foreach ($template["resources"] as $resource) {
+						if (!isset($templates[$template["id"]]) && ($resource["type"] == "callouts" || $resource["type"] == "matrix")) {
+							$templates[$template["id"]] = $template["resources"];
+							$template_query[] = "template = '".$template["id"]."'";
+							break;
+						}
+					}
+				}
+			}
+
+			if (!count($template_query)) {
+				return $pages;
 			}
 
 			$q = sqlquery("SELECT * FROM bigtree_pages WHERE (".implode(" OR ",$template_query).")");
@@ -100,7 +118,8 @@
 							}
 						}
 					} elseif ($resource["type"] == "matrix") {
-						$found = static::parseMatrix($resource["options"]["columns"], $resource[$resource["id"]], $callout_id);
+						$columns = isset($field["settings"]["columns"]) ? $field["settings"]["columns"] : $field["options"]["columns"];
+						$found = static::parseMatrix($columns, $resource[$resource["id"]], $callout_id);
 					}
 
 					if ($found) {
@@ -118,21 +137,45 @@
 
 		static function getUsageInModules($callout_id) {
 			$modules = array();
-			$form_query = sqlquery("SELECT * FROM bigtree_module_forms WHERE fields LIKE '%callouts%' OR fields LIKE '%matrix%'");
+			$callout_or_matrix_forms = array();
 
-			while ($form = sqlfetch($form_query)) {
-				$fields = json_decode($form["fields"], true);
+			if (BIGTREE_REVISION < 400) {
+				$form_query = sqlquery("SELECT * FROM bigtree_module_forms WHERE fields LIKE '%callouts%' OR fields LIKE '%matrix%'");
 
+				while ($form = sqlfetch($form_query)) {
+					$form["fields"] = json_decode($form["fields"], true);
+					$callout_or_matrix_forms[] = $form;
+				}
+			} else {
+				$all_modules = BigTreeJSONDB::getAll("modules");
+
+				foreach ($all_modules as $module) {
+					if (is_array($module["forms"])) {
+						foreach ($module["forms"] as $form) {
+							foreach ($form["fields"] as $field) {
+								if ($field["type"] == "callouts" || $field["type"] == "matrix") {
+									$form["module"] = $module["id"];
+									$callout_or_matrix_forms[] = $form;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			foreach ($callout_or_matrix_forms as $form) {
 				// Now get the contents of the table
 				$q = sqlquery("SELECT * FROM `".$form["table"]."`");
 
 				while ($entry = sqlfetch($q)) {
-					foreach ($fields as $field) {
+					foreach ($form["fields"] as $field) {
 						$found = false;
 
 						if ($field["type"] == "matrix") {
 							$data = json_decode($entry[$field["column"]], true);
-							$found = static::parseMatrix($field["options"]["columns"], $data, $callout_id);
+							$columns = isset($field["settings"]["columns"]) ? $field["settings"]["columns"] : $field["options"]["columns"];
+							$found = static::parseMatrix($columns, $data, $callout_id);
 						} elseif ($field["type"] == "callouts") {
 							$data = json_decode($entry[$field["column"]], true);
 
@@ -163,15 +206,32 @@
 
 		static function getUsageInSettings($callout_id) {
 			$settings = array();
-			$q = sqlquery("SELECT id, options, name, type FROM bigtree_settings WHERE type = 'matrix' OR type = 'callouts'");
 
-			while ($setting = sqlfetch($q)) {
+			$matrix_or_callout_settings = array();
+
+			if (BIGTREE_REVISION < 400) {
+				$q = sqlquery("SELECT id, options, name, type FROM bigtree_settings WHERE type = 'matrix' OR type = 'callouts'");
+
+				while ($f = sqlfetch($q)) {
+					$f["settings"] = json_decode($setting["settings"] ?: $setting["options"], true);
+					$matrix_or_callout_settings[] = $f;
+				}
+			} else {
+				$all_settings = BigTreeJSONDB::getAll("settings");
+
+				foreach ($all_settings as $setting) {
+					if ($setting["type"] == "matrix" || $setting["type"] == "callouts") {
+						$matrix_or_callout_settings[] = $setting;
+					}
+				}
+			}
+
+			foreach ($matrix_or_callout_settings as $setting) {
 				$found = false;
 				$value = BigTreeCMS::getSetting($setting["id"]);
 
 				if ($setting["type"] == "matrix") {
-					$options = json_decode($setting["options"], true);
-					$found = static::parseMatrix($options["columns"], $value, $callout_id);
+					$found = static::parseMatrix($setting["settings"]["columns"], $value, $callout_id);
 				} else {
 					foreach ($value as $callout_data) {
 						$found = static::parseCalloutData($callout_data, $callout_id);
@@ -198,9 +258,11 @@
 				foreach (array_filter((array) $matrix_data) as $entry) {
 					foreach ($matrix_columns as $matrix_field) {
 						if ($matrix_field["type"] == "matrix") {
-							if (is_array($matrix_field["options"])) {
-								if (array_key_exists("columns",$matrix_field["options"])) {
-									$found = static::parseMatrix($matrix_field["options"]["columns"], $entry[$matrix_field["id"]], $callout_id);
+							$settings = $matrix_field["settings"] ?: $matrix_field["options"];
+
+							if (is_array($settings)) {
+								if (array_key_exists("columns", $settings)) {
+									$found = static::parseMatrix($settings["columns"], $entry[$matrix_field["id"]], $callout_id);
 
 									if ($found) {
 										return true;
@@ -247,7 +309,8 @@
 						}
 					}
 				} elseif ($field["type"] == "matrix") {
-					$found = static::parseMatrix($field["options"]["columns"], $callout_data[$field["id"]], $callout_id);
+					$columns = isset($field["settings"]["columns"]) ? $field["settings"]["columns"] : $field["options"]["columns"];
+					$found = static::parseMatrix($columns, $callout_data[$field["id"]], $callout_id);
 
 					if ($found) {
 						return true;
