@@ -1,0 +1,13 @@
+#callout_field_area .inner {
+	display: none;
+}
+
+#callout_field_area .matrix_entry_fields {
+	background: transparent;
+	border: none;
+	padding: 0;
+}
+
+#callout_field_area .matrix_collapse {
+	display: none;
+}

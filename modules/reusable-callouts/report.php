@@ -1,4 +1,9 @@
 <?php
+	/**
+	 * @global BigTreeAdmin $admin
+	 * @global array $bigtree
+	 */
+	
 	$mod = new BTXReusableCallouts;
 	$callout = $mod->get($bigtree["commands"][0]);
 	$usage = $mod->getUsage($callout);

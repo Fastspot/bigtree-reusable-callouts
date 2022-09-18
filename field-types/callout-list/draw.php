@@ -3,15 +3,15 @@
 	// $_POST is something we have control over both inline and when calling the AJAX resources
 	if (!isset($_POST["btx_reusable_callouts_editor"])) {
 		$module = new BTXReusableCallouts;
-		$available = $module->getMatching(array("archived", "type"), array("", $bigtree["callout"]["id"]), "title ASC");
+		$available = $module->getMatching(["archived", "type"], ["", $bigtree["callout"]["id"]], "title ASC");
 		$existing_value = false;
-
+		
 		if (count($available)) {
-			$field["options"]["list"] = array();
-
+			$field["options"]["list"] = [];
+			
 			foreach ($available as $item) {
-				$field["options"]["list"][] = array("value" => $item["id"], "description" => $item["title"]);
-
+				$field["options"]["list"][] = ["value" => $item["id"], "description" => $item["title"]];
+				
 				// We need to make sure the current value is in the list since callout types can switch
 				if ($item["id"] == $field["value"]) {
 					$existing_value = $field["value"];
@@ -19,7 +19,15 @@
 			}
 ?>
 <fieldset>
-	<label<?=$label_validation_class?>><?=$field["title"]?><?php if ($field["subtitle"]) { ?> <small><?=$field["subtitle"]?></small><?php } ?></label>
+	<label<?=$label_validation_class?>>
+		<?php
+			echo $field["title"];
+			
+			if ($field["subtitle"]) {
+				echo '<small>'.$field["subtitle"].'</small>';
+			}
+		?>
+	</label>
 	<?php
 		if (BIGTREE_REVISION > 300) {
 			include BigTree::path("admin/field-types/list/draw.php");
@@ -34,8 +42,7 @@
 	}
 ?>
 <script>
-	(function() {
-
+	(function () {
 		var DisplayField;
 		var Form;
 		var Fieldset;
@@ -46,16 +53,16 @@
 		var SavedDisplayFieldValue;
 
 		// Add a ready hook to populate our values
-		BigTree.ReadyHooks.push(function() {
-			Form = $("#<?=$field["id"]?>").parents(".callout_fields");
-			Fieldset = $("#<?=$field["id"]?>").parents("fieldset");
+		BigTree.ReadyHooks.push(function () {
+			Form = $("#<?=$field["id"]?>").closest(".callout_fields");
+			Fieldset = $("#<?=$field["id"]?>").closest("fieldset");
 			OtherFieldsets = Form.find("fieldset").not(Fieldset);
 			RequiredFields = OtherFieldsets.find("input.required, select.required, textarea.required, input.numeric, input.email, input.link");
 			OtherFields = OtherFieldsets.find("input, select, textarea");
 			DisplayField = Form.find(".display_field");
 			SavedDisplayFieldValue = DisplayField.val();
 		});
-
+		
 		<?php
 			if ($existing_value) {
 		?>
@@ -66,18 +73,18 @@
 		?>
 
 		function saveInputStates() {
-			RequiredFields.each(function() {
+			RequiredFields.each(function () {
 				$(this).attr("data-reusable-callouts-saved-class", $(this).attr("class"));
 				$(this).attr("class", "");
 			});
 
 			OtherFieldsets.addClass("disabled");
 			DisplayField.val("<?=$field["key"]?>");
-
+			
 			<?php
 				if (BIGTREE_REVISION < 211) {
 			?>
-			OtherFields.each(function() {
+			OtherFields.each(function () {
 				$(this).attr("data-disabled-state", $(this).prop("disabled"));
 				$(this).prop("disabled", true);
 
@@ -91,17 +98,17 @@
 		}
 
 		function resetInputStates() {
-			RequiredFields.each(function() {
+			RequiredFields.each(function () {
 				$(this).attr("class", $(this).attr("data-reusable-callouts-saved-class"));
 			});
 
 			OtherFieldsets.removeClass("disabled");
 			DisplayField.val(SavedDisplayFieldValue);
-
+			
 			<?php
 				if (BIGTREE_REVISION < 211) {
 			?>
-			OtherFields.each(function() {
+			OtherFields.each(function () {
 				if ($(this).attr("data-disabled-state") == "false") {
 					$(this).prop("disabled", false);
 
@@ -115,13 +122,13 @@
 			?>
 		}
 
-		$("#<?=$field["id"]?>").change(function() {
+		$("#<?=$field["id"]?>").change(function () {
 			var value = $(this).val();
 
 			// We're going to remove the required classes and disable everything
 			if (value && !LastValue) {
 				saveInputStates();
-			// We're going to return the classes and re-enable
+				// We're going to return the classes and re-enable
 			} else if (!value && LastValue) {
 				resetInputStates();
 			}

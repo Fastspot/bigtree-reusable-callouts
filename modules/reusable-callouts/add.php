@@ -1,9 +1,10 @@
 <?php
-	$callout_list = $admin->getCalloutsAllowed("name ASC");
+	/**
+	 * @global BigTreeAdmin $admin
+	 * @global array $bigtree
+	 */
 
 	$bigtree["access_level"] = $admin->getAccessLevel($bigtree["module"]);
-	$bigtree["resources"] = array("type" => $callout_list[0]["id"]);
-	$bigtree["callout_key"] = "data";
 ?>
 <form method="post" enctype="multipart/form-data" action="<?=MODULE_ROOT?>process/">
 	<div class="container">
@@ -24,11 +25,11 @@
 			// TinyMCE tooltips and menus sometimes get stuck
 			$(".mce-tooltip, .mce-menu").remove();
 
-			Fields.load("<?=ADMIN_ROOT?>ajax/callouts/resources/", {
-				type: data.value,
+			Fields.load("<?=ADMIN_ROOT?>ajax/callout/", {
+				type: $(this).val(),
 				count: 0,
 				key: "data",
-				tab_depth: 1,
+				tab_index: 3,
 				btx_reusable_callouts_editor: true
 			}, function() {
 				BigTree.formHooks("#callout_field_area");

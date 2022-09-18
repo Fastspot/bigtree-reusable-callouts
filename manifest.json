@@ -1,8 +1,8 @@
 {
     "type": "extension",
     "id": "com.fastspot.reusable-callouts",
-    "version": "1.3.6",
-    "revision": 21,
+    "version": "1.4",
+    "revision": 22,
     "compatibility": "4.2+",
     "title": "Reusable Callouts",
     "description": "Implements a module that allows users to create reusable callouts and a field type allowing end users to choose a pre-created callout when adding callouts.",
@@ -35,7 +35,7 @@
                     "other_table": ""
                 },
                 "extension": "com.fastspot.reusable-callouts",
-                "id": "modules-15ca4a56a26e1e",
+                "id": "modules-1631e764009bb7",
                 "views": [
                     {
                         "title": "Reusable Callouts",
@@ -48,7 +48,7 @@
                             "sort": "`id` DESC",
                             "other_table": "",
                             "ot_sort_direction": "ASC",
-                            "group_parser": "if (BIGTREE_REVISION < 400) {\r\n    $callout = sqlfetch(sqlquery(\"SELECT name FROM bigtree_callouts WHERE id = '\".sqlescape($item[\"type\"]).\"'\"));\r\n} else {\r\n    $callout = BigTreeJSONDB::get(\"callouts\", $item[\"type\"]);\r\n}\r\n\r\n$value = $callout[\"name\"];"
+                            "group_parser": "if (BIGTREE_REVISION < 400) {\r\n    $callout = sqlfetch(sqlquery(\"SELECT name FROM bigtree_callouts WHERE id = '\".sqlescape($item[\"type\"]).\"'\"));\r\n} else {\r\n    $callout = BigTreeJSONDB::get(\"callouts\", $item[\"type\"]);\r\n}\r\n\r\n$value = $callout[\"name\"] ?? \"\";"
                         },
                         "fields": {
                             "title": {
@@ -67,7 +67,7 @@
                         "related_form": null,
                         "preview_url": "",
                         "exclude_from_search": "",
-                        "id": "views-15ca4a56a28987"
+                        "id": "views-1631e76400acd1"
                     }
                 ],
                 "actions": [
@@ -77,13 +77,13 @@
                         "class": "list",
                         "name": "View Reusable Callouts",
                         "form": null,
-                        "view": "views-15ca4a56a28987",
+                        "view": "views-1631e76400acd1",
                         "report": null,
                         "level": "0",
-                        "position": "2",
+                        "position": 3,
                         "0": "route",
-                        "id": "actions-15ca4a56a2d366",
-                        "module": "modules-15ca4a56a26e1e"
+                        "id": "actions-1631e764010f90",
+                        "module": "modules-1631e764009bb7"
                     },
                     {
                         "route": "add",
@@ -94,10 +94,10 @@
                         "view": null,
                         "report": null,
                         "level": "0",
-                        "position": "1",
+                        "position": 2,
                         "0": "route",
-                        "id": "actions-15ca4a56a2ed16",
-                        "module": "modules-15ca4a56a26e1e"
+                        "id": "actions-1631e76401186d",
+                        "module": "modules-1631e764009bb7"
                     },
                     {
                         "route": "edit",
@@ -110,8 +110,8 @@
                         "level": "0",
                         "position": "0",
                         "0": "route",
-                        "id": "actions-15ca4a56a30014",
-                        "module": "modules-15ca4a56a26e1e"
+                        "id": "actions-1631e764012a01",
+                        "module": "modules-1631e764009bb7"
                     }
                 ],
                 "forms": [],
