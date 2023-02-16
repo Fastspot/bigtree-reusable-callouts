@@ -2,6 +2,10 @@
 	display: none;
 }
 
+#callout_field_area .matrix_list .inner {
+	display: block;
+}
+
 #callout_field_area .matrix_entry_fields {
 	background: transparent;
 	border: none;
@@ -10,4 +14,14 @@
 
 #callout_field_area .matrix_collapse {
 	display: none;
+}
+
+#callout_field_area .matrix_entry_fields .matrix_entry_fields {
+	background: rgba(0, 0, 0, 0.02);
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+	padding: 15px 10px;
+}
+
+#callout_field_area .matrix_entry_fields .matrix_entry_fields .matrix_collapse {
+	display: inline-block;
 }
