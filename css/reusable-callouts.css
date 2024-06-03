@@ -1,4 +1,4 @@
-#callout_field_area .inner {
+#callout_field_area > .inner {
 	display: none;
 }
 
